@@ -28,15 +28,35 @@
         }
         
         body { 
-            background-color: var(--bg-color); 
+            background-color: #0a1014; 
             color: var(--text-main); 
             height: 100vh; 
             display: flex; 
-            flex-direction: column; 
+            justify-content: center; 
+            align-items: center;
             overflow: hidden;
         }
+
+        .app-container {
+            width: 100%;
+            max-width: 420px; 
+            height: 100vh;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 0 25px rgba(0,0,0,0.5); 
+        }
+
+        @media screen and (min-width: 450px) {
+            .app-container {
+                height: 95vh;
+                border-radius: 30px;
+                border: 6px solid #2a3942;
+                overflow: hidden;
+            }
+        }
         
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-thumb { background-color: #374045; border-radius: 10px; }
         
@@ -81,21 +101,51 @@
             text-overflow: ellipsis;
             max-width: 180px;
         }
+        
+        /* Area Titik Tiga dan Dropdown */
         .header-right {
             display: flex;
             gap: 20px;
             color: var(--text-main);
             font-size: 1.2rem;
             align-items: center;
+            position: relative; /* Penting untuk dropdown */
+        }
+        .header-right i {
+            cursor: pointer;
+            padding: 5px;
         }
         
-        /* Chat Area (Berlatar Belakang Gelap) */
+        /* Dropdown Menu Style */
+        .dropdown-menu {
+            display: none; /* Disembunyikan secara lalai */
+            position: absolute;
+            top: 40px;
+            right: 0;
+            background-color: var(--msg-in);
+            min-width: 140px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            border-radius: 8px;
+            z-index: 100;
+            overflow: hidden;
+        }
+        .dropdown-menu div {
+            padding: 12px 16px;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .dropdown-menu div:hover {
+            background-color: var(--input-bg);
+        }
+        
+        /* Chat Area */
         #chat-container { 
             flex: 1; 
             padding: 20px 5%; 
             overflow-y: auto; 
             background-color: var(--chat-bg); 
-            /* Doodle Background (Optional, menggunakan warna solid WA) */
             background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
             background-blend-mode: overlay;
             display: flex; 
@@ -114,242 +164,98 @@
             line-height: 1.4;
             box-shadow: 0 1px 0.5px rgba(11, 20, 26, .2);
         }
-        .msg.in { 
-            background: var(--msg-in); 
-            align-self: flex-start; 
-            border-top-left-radius: 0; 
-        }
-        .msg.out { 
-            background: var(--msg-out); 
-            align-self: flex-end; 
-            border-top-right-radius: 0; 
-        }
+        .msg.in { background: var(--msg-in); align-self: flex-start; border-top-left-radius: 0; }
+        .msg.out { background: var(--msg-out); align-self: flex-end; border-top-right-radius: 0; }
         
-        /* Nama Pengirim Grup */
-        .msg-sender { 
-            font-size: 0.85rem; 
-            font-weight: 500; 
-            margin-bottom: 3px; 
-            display: flex;
-            justify-content: space-between;
-        }
-        .msg-sender-number {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            font-weight: normal;
-            margin-left: 10px;
-        }
+        .msg-sender { font-size: 0.85rem; font-weight: 500; margin-bottom: 3px; display: flex; justify-content: space-between;}
+        .msg-sender-number { font-size: 0.75rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;}
 
-        /* Waktu & Status */
-        .msg-footer {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            gap: 5px;
-            margin-top: -5px;
-            float: right;
-            margin-left: 15px;
-            position: relative;
-            top: 5px;
-        }
-        .msg-time { 
-            font-size: 0.68rem; 
-            color: rgba(255, 255, 255, 0.6); 
-        }
-        .msg-status {
-            font-size: 0.8rem;
-            color: #53bdeb; /* Warna centang biru WA */
-        }
+        .msg-footer { display: flex; justify-content: flex-end; align-items: center; gap: 5px; margin-top: -5px; float: right; margin-left: 15px; position: relative; top: 5px;}
+        .msg-time { font-size: 0.68rem; color: rgba(255, 255, 255, 0.6); }
+        .msg-status { font-size: 0.8rem; color: #53bdeb; }
         
-        .msg img { 
-            max-width: 100%; 
-            max-height: 250px;
-            border-radius: 6px; 
-            margin-top: 5px; 
-            margin-bottom: 5px;
-            display: block;
-        }
-        .deleted-msg { 
-            font-style: italic; 
-            color: var(--text-muted); 
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .delete-btn { 
-            font-size: 0.8rem; 
-            color: var(--text-muted); 
-            cursor: pointer; 
-            margin-left: 10px;
-        }
+        .msg img { max-width: 100%; max-height: 250px; border-radius: 6px; margin-top: 5px; margin-bottom: 5px; display: block;}
+        .deleted-msg { font-style: italic; color: var(--text-muted); display: flex; align-items: center; gap: 5px;}
+        .delete-btn { font-size: 0.8rem; color: var(--text-muted); cursor: pointer; margin-left: 10px;}
         .delete-btn:hover { color: #ff5b5b; }
 
-        /* Input Area WhatsApp Style */
-        #input-area { 
-            background: var(--header-bg); 
-            padding: 10px; 
-            display: flex; 
-            align-items: center; 
-            gap: 8px; 
-        }
-        .input-wrapper {
-            flex: 1;
-            background: var(--input-bg);
-            border-radius: 24px;
-            display: flex;
-            align-items: center;
-            padding: 8px 15px;
-            gap: 15px;
-        }
-        .input-wrapper input[type="text"] { 
-            flex: 1; 
-            border: none; 
-            background: transparent; 
-            color: var(--text-main); 
-            outline: none; 
-            font-size: 1rem;
-        }
-        .input-wrapper input::placeholder {
-            color: var(--text-muted);
-        }
-        .btn-icon { 
-            color: var(--text-muted); 
-            font-size: 1.3rem; 
-            cursor: pointer; 
-        }
+        /* Input Area */
+        #input-area { background: var(--header-bg); padding: 10px; display: flex; align-items: center; gap: 8px; }
+        .input-wrapper { flex: 1; background: var(--input-bg); border-radius: 24px; display: flex; align-items: center; padding: 8px 15px; gap: 15px; }
+        .input-wrapper input[type="text"] { flex: 1; border: none; background: transparent; color: var(--text-main); outline: none; font-size: 1rem;}
+        .input-wrapper input::placeholder { color: var(--text-muted); }
+        .btn-icon { color: var(--text-muted); font-size: 1.3rem; cursor: pointer; }
         .btn-icon:hover { color: var(--text-main); }
         
-        /* Tombol Kirim / Mic Hijau */
-        .send-btn-wrapper {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background-color: var(--accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            flex-shrink: 0;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-        }
-        .send-btn-wrapper i {
-            color: white;
-            font-size: 1.2rem;
-        }
+        .send-btn-wrapper { width: 45px; height: 45px; border-radius: 50%; background-color: var(--accent); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.3);}
+        .send-btn-wrapper i { color: white; font-size: 1.2rem;}
 
         /* Modal Overlay */
-        .modal { 
-            display: none; 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            background: rgba(11, 20, 26, 0.9); 
-            align-items: center; 
-            justify-content: center; 
-            z-index: 1000; 
-        }
-        .modal-content { 
-            background: var(--msg-in); 
-            padding: 30px; 
-            border-radius: 12px; 
-            width: 90%; 
-            max-width: 350px; 
-            text-align: center; 
-            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
-        }
-        .modal-content h2 {
-            margin-bottom: 20px;
-            font-size: 1.5rem;
-            color: var(--text-main);
-        }
-        .modal-content input { 
-            width: 100%; 
-            padding: 14px; 
-            margin: 8px 0; 
-            border-radius: 8px; 
-            border: none; 
-            background: var(--input-bg); 
-            color: white; 
-            outline: none;
-            font-size: 1rem;
-        }
-        .modal-content button { 
-            width: 100%; 
-            padding: 14px; 
-            background: var(--accent); 
-            color: #111b21; 
-            border: none; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            font-weight: bold; 
-            margin-top: 15px;
-            font-size: 1rem;
-            transition: opacity 0.2s;
-        }
+        .modal { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11, 20, 26, 0.9); align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: var(--msg-in); padding: 30px; border-radius: 12px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 15px 30px rgba(0,0,0,0.5);}
+        .modal-content h2 { margin-bottom: 20px; font-size: 1.5rem; color: var(--text-main); }
+        .modal-content input { width: 100%; padding: 14px; margin: 8px 0; border-radius: 8px; border: none; background: var(--input-bg); color: white; outline: none; font-size: 1rem;}
+        .modal-content button { width: 100%; padding: 14px; background: var(--accent); color: #111b21; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 15px; font-size: 1rem; transition: opacity 0.2s;}
         .modal-content button:hover { opacity: 0.9; }
-        .modal-content p { 
-            margin-top: 20px; 
-            font-size: 0.9rem; 
-            color: var(--accent); 
-            cursor: pointer; 
-        }
+        .modal-content p { margin-top: 20px; font-size: 0.9rem; color: var(--accent); cursor: pointer; }
 
-        /* Sembunyikan elemen input fail */
         input[type="file"] { display: none; }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="header-left">
-            <i class="fas fa-arrow-left"></i>
-            <img src="https://via.placeholder.com/40" id="user-pp" class="profile-pic" title="Tukar Gambar Profil" onclick="document.getElementById('pp-upload').click()">
-            <input type="file" id="pp-upload" accept="image/*">
-            <div class="header-text">
-                <h3>My Dear</h3>
+    <div class="app-container">
+        <header>
+            <div class="header-left">
+                <i class="fas fa-arrow-left"></i>
+                <img src="https://via.placeholder.com/40" id="user-pp" class="profile-pic" title="Tukar Gambar Profil" onclick="document.getElementById('pp-upload').click()">
+                <input type="file" id="pp-upload" accept="image/*">
+                <div class="header-text">
+                    <h3>My Dear</h3>
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <i class="fas fa-ellipsis-v" onclick="toggleDropdown(event)"></i>
+                <div id="settings-menu" class="dropdown-menu">
+                    <div onclick="doLogout()"><i class="fas fa-sign-out-alt" style="margin-right: 8px;"></i> Logout</div>
+                </div>
+            </div>
+        </header>
+
+        <div id="chat-container"></div>
+
+        <div id="input-area">
+            <div class="input-wrapper">
+                <i class="far fa-smile btn-icon" title="Emoji/Stiker" onclick="sendMsg('⭐', 'text')"></i>
+                <input type="text" id="msg-input" placeholder="Ketik pesan" autocomplete="off" onclick="checkLoginFocus()">
+                <i class="fas fa-paperclip btn-icon" title="Lampirkan File" onclick="document.getElementById('img-upload').click()"></i>
+                <i class="fas fa-camera btn-icon" title="Kamera"></i>
+                <input type="file" id="img-upload" accept="image/*">
+            </div>
+            
+            <div class="send-btn-wrapper" onclick="handleSendClick()">
+                <i class="fas fa-microphone" id="send-icon"></i>
             </div>
         </div>
-        <div class="header-right">
-            <i class="fas fa-ellipsis-v"></i>
-        </div>
-    </header>
 
-    <div id="chat-container"></div>
-
-    <div id="input-area">
-        <div class="input-wrapper">
-            <i class="far fa-smile btn-icon" title="Emoji/Stiker" onclick="sendMsg('⭐', 'text')"></i>
-            <input type="text" id="msg-input" placeholder="Ketik pesan" autocomplete="off" onclick="checkLoginFocus()">
-            <i class="fas fa-paperclip btn-icon" title="Lampirkan File" onclick="document.getElementById('img-upload').click()"></i>
-            <i class="fas fa-camera btn-icon" title="Kamera"></i>
-            <input type="file" id="img-upload" accept="image/*">
-        </div>
-        
-        <div class="send-btn-wrapper" onclick="handleSendClick()">
-            <i class="fas fa-microphone" id="send-icon"></i>
-        </div>
-    </div>
-
-    <div class="modal" id="auth-modal">
-        <div class="modal-content">
-            <h2 id="auth-title">Login WhatsApp</h2>
-            <input type="text" id="auth-user" placeholder="Nama Pengguna">
-            <input type="password" id="auth-pass" placeholder="Kata Laluan">
-            <button onclick="doAuth()">Masuk</button>
-            <p id="auth-toggle" onclick="toggleAuth()">Belum ada akaun? Daftar di sini</p>
+        <div class="modal" id="auth-modal">
+            <div class="modal-content">
+                <h2 id="auth-title">Login WhatsApp</h2>
+                <input type="text" id="auth-user" placeholder="Nama Pengguna">
+                <input type="password" id="auth-pass" placeholder="Kata Laluan">
+                <button onclick="doAuth()">Masuk</button>
+                <p id="auth-toggle" onclick="toggleAuth()">Belum ada akaun? Daftar di sini</p>
+            </div>
         </div>
     </div>
 
 <script>
-    // URL Google Apps Script yang Baru
     const GAS_URL = 'https://script.google.com/macros/s/AKfycbx6DCNrZzA4ShLPPLlRRn0t0qK4LYY-IpS0AN1pu1ENNgnwlyg8m9pSQgSxDMQ2lRzg/exec'; 
 
     let currentUser = localStorage.getItem('username');
     let isLoginMode = true;
 
-    // Fungsi Generate Warna Random Berdasarkan Nama (Seperti Grup WA)
     const waColors = ['#ff5252', '#ba68c8', '#ff7a00', '#00bfa5', '#cddc39', '#e91e63', '#4fc3f7', '#ffb300'];
     function getUserColor(username) {
         let hash = 0;
@@ -359,17 +265,15 @@
         return waColors[Math.abs(hash) % waColors.length];
     }
 
-    // Jalankan aplikasi pertama kali dibuka
     window.onload = () => {
         if(currentUser) {
             let pp = localStorage.getItem('profilePic');
             if(pp) document.getElementById('user-pp').src = pp;
         }
         loadChats();
-        setInterval(loadChats, 3000); // Semak mesej baharu setiap 3 saat
+        setInterval(loadChats, 3000); 
     };
 
-    // Tukar Ikon Mic ke Send saat mengetik
     const msgInput = document.getElementById('msg-input');
     const sendIcon = document.getElementById('send-icon');
     
@@ -381,17 +285,14 @@
         }
     });
 
-    // Handle klik tombol hijau di kanan bawah
     function handleSendClick() {
         if(msgInput.value.trim().length > 0) {
             sendMsg();
         } else {
-            // Logika voice note kosong (opsional)
             alert("Fungsi Voice Note belum tersedia.");
         }
     }
 
-    // Fungsi semak login apabila input chat diklik
     function checkLoginFocus() {
         if (!currentUser) {
             msgInput.blur();
@@ -399,14 +300,49 @@
         }
     }
 
-    // Tukar paparan modal antara Login dan Register
     function toggleAuth() {
         isLoginMode = !isLoginMode;
         document.getElementById('auth-title').innerText = isLoginMode ? 'Login WhatsApp' : 'Daftar Akaun';
         document.getElementById('auth-toggle').innerText = isLoginMode ? 'Belum ada akaun? Daftar di sini' : 'Sudah ada akaun? Login di sini';
     }
 
-    // Proses Login atau Register
+    // FUNGSI UNTUK MENU DROPDOWN & LOGOUT
+    function toggleDropdown(event) {
+        event.stopPropagation(); // Mencegah klik menular ke window
+        let menu = document.getElementById("settings-menu");
+        menu.style.display = (menu.style.display === "block") ? "none" : "block";
+    }
+
+    // Tutup dropdown jika user klik sembarangan di luar menu
+    window.onclick = function(event) {
+        let menu = document.getElementById("settings-menu");
+        if (menu && menu.style.display === "block") {
+            menu.style.display = "none";
+        }
+    }
+
+    function doLogout() {
+        if(confirm("Adakah anda pasti mahu log keluar?")) {
+            // Hapus data dari LocalStorage browser
+            localStorage.removeItem('username');
+            localStorage.removeItem('profilePic');
+            currentUser = null;
+            
+            // Kembalikan foto profil ke lalai
+            document.getElementById('user-pp').src = 'https://via.placeholder.com/40';
+            
+            // Sembunyikan menu dropdown
+            document.getElementById("settings-menu").style.display = "none";
+            
+            // Munculkan kembali modal login
+            document.getElementById('auth-modal').style.display = 'flex';
+            
+            // Bersihkan input teks 
+            document.getElementById('auth-user').value = '';
+            document.getElementById('auth-pass').value = '';
+        }
+    }
+
     async function doAuth() {
         let u = document.getElementById('auth-user').value.trim();
         let p = document.getElementById('auth-pass').value.trim();
@@ -444,7 +380,6 @@
         }
     }
 
-    // Ambil data chat dari Google Sheets
     async function loadChats() {
         try {
             let res = await fetch(GAS_URL);
@@ -477,7 +412,6 @@
                         let delBtn = isMe ? `<i class="fas fa-trash delete-btn" title="Hapus pesan" onclick="deleteChat('${chat.id}')"></i>` : '';
                         let readReceipt = isMe ? `<i class="fas fa-check-double msg-status"></i>` : '';
                         
-                        // Buat nombor fake (seperti di screenshot) dari panjang username
                         let fakeNumber = "+62 8" + (chat.username.length * 12) + "-" + Math.floor(Math.random() * 9000 + 1000) + "-" + Math.floor(Math.random() * 9000 + 1000);
 
                         let senderHTML = !isMe ? `
@@ -506,7 +440,6 @@
         }
     }
 
-    // Fungsi Hantar Mesej (Teks / Gambar / Stiker)
     async function sendMsg(content = null, type = 'text') {
         if(!currentUser) return checkLoginFocus();
         
@@ -514,9 +447,8 @@
         if(!msg && type === 'text') return;
 
         msgInput.value = ''; 
-        sendIcon.className = 'fas fa-microphone'; // Reset ikon ke mic
+        sendIcon.className = 'fas fa-microphone';
         
-        // Paparan Sementara (Optimistic UI)
         let container = document.getElementById('chat-container');
         let tempDiv = document.createElement('div');
         tempDiv.className = 'msg out';
@@ -546,7 +478,6 @@
         }
     }
 
-    // Padam / Tarik Balik Mesej
     async function deleteChat(id) {
         if(confirm("Hapus pesan ini?")) {
             try {
@@ -561,7 +492,6 @@
         }
     }
 
-    // Fungsi Kecilkan Saiz Gambar & Tukar ke Base64
     function resizeImageAndConvert(file, callback) {
         let reader = new FileReader();
         reader.onload = function(e) {
@@ -581,7 +511,6 @@
         reader.readAsDataURL(file);
     }
 
-    // Event Pengendali Fail Gambar Chat
     document.getElementById('img-upload').addEventListener('change', function(e) {
         if(!currentUser) return checkLoginFocus();
         if(this.files[0]) {
@@ -591,7 +520,6 @@
         }
     });
 
-    // Event Pengendali Fail Gambar Profil
     document.getElementById('pp-upload').addEventListener('change', function(e) {
         if(!currentUser) return checkLoginFocus();
         if(this.files[0]) {
@@ -610,7 +538,6 @@
         }
     });
 
-    // Hantar apabila butang Enter ditekan
     msgInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') sendMsg();
     });
