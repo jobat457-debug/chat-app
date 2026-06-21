@@ -108,13 +108,12 @@
         align-items: center;
       }
 
-      /* Chat Area (Berlatar Belakang Gelap) */
+      /* Chat Area */
       #chat-container {
         flex: 1;
         padding: 20px 5%;
         overflow-y: auto;
         background-color: var(--chat-bg);
-        /* Doodle Background (Optional, menggunakan warna solid WA) */
         background-image: url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png");
         background-blend-mode: overlay;
         display: flex;
@@ -320,8 +319,6 @@
         color: var(--accent);
         cursor: pointer;
       }
-
-      /* Sembunyikan elemen input fail */
       input[type="file"] {
         display: none;
       }
@@ -394,23 +391,17 @@
     </div>
 
     <script>
-      // URL Google Apps Script Anda
-      const GAS_URL =
-        "https://script.google.com/macros/s/AKfycbwGaB8rZrNB87vLboyUA52N9hCqNAd9KYVdqRv9XumNxZFpqYB-wdo53DQdfLAtXPNx/exec";
+      // PERHATIAN: Masukkan URL Web App Anda yang berakhiran "/exec" di sini!
+      // Jangan gunakan URL yang berakhiran "/dev" karena akan menyebabkan error CORS.
+      const GAS_URL = "https://script.google.com/macros/s/AKfycbx6DCNrZzA4ShLPPLlRRn0t0qK4LYY-IpS0AN1pu1ENNgnwlyg8m9pSQgSxDMQ2lRzg/exec";
 
       let currentUser = localStorage.getItem("username");
       let isLoginMode = true;
 
-      // Fungsi Generate Warna Random Berdasarkan Nama (Seperti Grup WA)
+      // Fungsi Generate Warna Random
       const waColors = [
-        "#ff5252",
-        "#ba68c8",
-        "#ff7a00",
-        "#00bfa5",
-        "#cddc39",
-        "#e91e63",
-        "#4fc3f7",
-        "#ffb300",
+        "#ff5252", "#ba68c8", "#ff7a00", "#00bfa5",
+        "#cddc39", "#e91e63", "#4fc3f7", "#ffb300"
       ];
       function getUserColor(username) {
         let hash = 0;
@@ -420,26 +411,22 @@
         return waColors[Math.abs(hash) % waColors.length];
       }
 
-      // Jalankan aplikasi pertama kali dibuka
       window.onload = () => {
         if (currentUser) {
           updateHeaderDisplay(currentUser);
           let pp = localStorage.getItem("profilePic");
           if (pp) document.getElementById("user-pp").src = pp;
         } else {
-          document.getElementById("user-display").innerText =
-            "Sila login untuk chat...";
+          document.getElementById("user-display").innerText = "Sila login untuk chat...";
         }
         loadChats();
-        setInterval(loadChats, 3000); // Semak mesej baharu setiap 3 saat
+        setInterval(loadChats, 3000); 
       };
 
       function updateHeaderDisplay(username) {
-        document.getElementById("user-display").innerText =
-          `~ ${username}, RahmatFauzi...`;
+        document.getElementById("user-display").innerText = `~ ${username}, RahmatFauzi...`;
       }
 
-      // Tukar Ikon Mic ke Send saat mengetik
       const msgInput = document.getElementById("msg-input");
       const sendIcon = document.getElementById("send-icon");
 
@@ -451,17 +438,14 @@
         }
       });
 
-      // Handle klik tombol hijau di kanan bawah
       function handleSendClick() {
         if (msgInput.value.trim().length > 0) {
           sendMsg();
         } else {
-          // Logika voice note kosong (opsional)
           alert("Fungsi Voice Note belum tersedia.");
         }
       }
 
-      // Fungsi semak login apabila input chat diklik
       function checkLoginFocus() {
         if (!currentUser) {
           msgInput.blur();
@@ -469,19 +453,18 @@
         }
       }
 
-      // Tukar paparan modal antara Login dan Register
       function toggleAuth() {
         isLoginMode = !isLoginMode;
-        document.getElementById("auth-title").innerText = isLoginMode
-          ? "Login WhatsApp"
-          : "Daftar Akun";
-        document.getElementById("auth-toggle").innerText = isLoginMode
-          ? "Belum ada akun? Daftar di sini"
-          : "Sudah ada akun? Login di sini";
+        document.getElementById("auth-title").innerText = isLoginMode ? "Login WhatsApp" : "Daftar Akun";
+        document.getElementById("auth-toggle").innerText = isLoginMode ? "Belum ada akun? Daftar di sini" : "Sudah ada akun? Login di sini";
       }
 
-      // Proses Login atau Register
       async function doAuth() {
+        if (GAS_URL === "MASUKKAN_URL_EXEC_ANDA_DI_SINI") {
+          alert("Tolong update GAS_URL di HTML dengan link /exec yang benar.");
+          return;
+        }
+
         let u = document.getElementById("auth-user").value.trim();
         let p = document.getElementById("auth-pass").value.trim();
         if (!u || !p) return alert("Sila isi username dan password!");
@@ -503,8 +486,7 @@
                 localStorage.setItem("profilePic", result.profilePic);
                 document.getElementById("user-pp").src = result.profilePic;
               } else {
-                document.getElementById("user-pp").src =
-                  "https://via.placeholder.com/40";
+                document.getElementById("user-pp").src = "https://via.placeholder.com/40";
               }
               updateHeaderDisplay(u);
               document.getElementById("auth-modal").style.display = "none";
@@ -520,17 +502,16 @@
         }
       }
 
-      // Ambil data chat dari Google Sheets
       async function loadChats() {
+        if (GAS_URL === "MASUKKAN_URL_EXEC_ANDA_DI_SINI") return;
+        
         try {
           let res = await fetch(GAS_URL);
           let result = await res.json();
 
           if (result.status === "success") {
             let container = document.getElementById("chat-container");
-            let isScrolledToBottom =
-              container.scrollHeight - container.clientHeight <=
-              container.scrollTop + 50;
+            let isScrolledToBottom = container.scrollHeight - container.clientHeight <= container.scrollTop + 50;
 
             container.innerHTML = "";
             result.data.forEach((chat) => {
@@ -538,70 +519,45 @@
               let isMe = chat.username === currentUser;
               div.className = `msg ${isMe ? "out" : "in"}`;
 
-              let timeStr = new Date(chat.timestamp).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              });
+              let timeStr = new Date(chat.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
               if (chat.isDeleted === true || chat.isDeleted === "true") {
                 div.innerHTML = `
-                            <span class="deleted-msg"><i class="fas fa-ban"></i> Pesan ini telah dihapus</span>
-                            <div class="msg-footer">
-                                <span class="msg-time">${timeStr}</span>
-                            </div>
-                        `;
+                    <span class="deleted-msg"><i class="fas fa-ban"></i> Pesan ini telah dihapus</span>
+                    <div class="msg-footer"><span class="msg-time">${timeStr}</span></div>
+                `;
               } else {
-                let contentHTML =
-                  chat.type === "image"
-                    ? `<img src="${chat.content}">`
-                    : `<span>${chat.content}</span>`;
-
-                let delBtn = isMe
-                  ? `<i class="fas fa-trash delete-btn" title="Hapus pesan" onclick="deleteChat('${chat.id}')"></i>`
-                  : "";
-                let readReceipt = isMe
-                  ? `<i class="fas fa-check-double msg-status"></i>`
-                  : "";
-
-                // Buat nombor fake (seperti di screenshot) dari panjang username
-                let fakeNumber =
-                  "+62 8" +
-                  chat.username.length * 12 +
-                  "-" +
-                  Math.floor(Math.random() * 9000 + 1000) +
-                  "-" +
-                  Math.floor(Math.random() * 9000 + 1000);
-
-                let senderHTML = !isMe
-                  ? `
-                            <div class="msg-sender" style="color: ${getUserColor(chat.username)};">
-                                <span>~ ${chat.username}</span>
-                                <span class="msg-sender-number">${fakeNumber}</span>
-                            </div>`
-                  : "";
+                let contentHTML = chat.type === "image" ? `<img src="${chat.content}">` : `<span>${chat.content}</span>`;
+                let delBtn = isMe ? `<i class="fas fa-trash delete-btn" title="Hapus pesan" onclick="deleteChat('${chat.id}')"></i>` : "";
+                let readReceipt = isMe ? `<i class="fas fa-check-double msg-status"></i>` : "";
+                let fakeNumber = "+62 8" + (chat.username.length * 12) + "-" + Math.floor(Math.random() * 9000 + 1000) + "-" + Math.floor(Math.random() * 9000 + 1000);
+                
+                let senderHTML = !isMe ? `
+                    <div class="msg-sender" style="color: ${getUserColor(chat.username)};">
+                        <span>~ ${chat.username}</span>
+                        <span class="msg-sender-number">${fakeNumber}</span>
+                    </div>` : "";
 
                 div.innerHTML = `
-                            ${senderHTML}
-                            ${contentHTML}
-                            <div class="msg-footer">
-                                <span class="msg-time">${timeStr}</span>
-                                ${readReceipt}
-                                ${delBtn}
-                            </div>
-                        `;
+                    ${senderHTML}
+                    ${contentHTML}
+                    <div class="msg-footer">
+                        <span class="msg-time">${timeStr}</span>
+                        ${readReceipt}
+                        ${delBtn}
+                    </div>
+                `;
               }
               container.appendChild(div);
             });
 
-            if (isScrolledToBottom)
-              container.scrollTop = container.scrollHeight;
+            if (isScrolledToBottom) container.scrollTop = container.scrollHeight;
           }
         } catch (e) {
           console.error("Gagal memuatkan sembang:", e);
         }
       }
 
-      // Fungsi Hantar Mesej (Teks / Gambar / Stiker)
       async function sendMsg(content = null, type = "text") {
         if (!currentUser) return checkLoginFocus();
 
@@ -609,21 +565,13 @@
         if (!msg && type === "text") return;
 
         msgInput.value = "";
-        sendIcon.className = "fas fa-microphone"; // Reset ikon ke mic
+        sendIcon.className = "fas fa-microphone"; 
 
-        // Paparan Sementara (Optimistic UI)
         let container = document.getElementById("chat-container");
         let tempDiv = document.createElement("div");
         tempDiv.className = "msg out";
-        let timeNow = new Date().toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        });
-
-        let tempContent =
-          type === "image"
-            ? `<i>Mengirim gambar...</i>`
-            : `<span>${msg}</span>`;
+        let timeNow = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+        let tempContent = type === "image" ? `<i>Mengirim gambar...</i>` : `<span>${msg}</span>`;
 
         tempDiv.innerHTML = `
             ${tempContent}
@@ -638,12 +586,7 @@
         try {
           await fetch(GAS_URL, {
             method: "POST",
-            body: JSON.stringify({
-              action: "send_chat",
-              username: currentUser,
-              type: type,
-              content: msg,
-            }),
+            body: JSON.stringify({ action: "send_chat", username: currentUser, type: type, content: msg }),
           });
           loadChats();
         } catch (err) {
@@ -652,17 +595,12 @@
         }
       }
 
-      // Padam / Tarik Balik Mesej
       async function deleteChat(id) {
         if (confirm("Hapus pesan ini?")) {
           try {
             await fetch(GAS_URL, {
               method: "POST",
-              body: JSON.stringify({
-                action: "delete_chat",
-                id: id,
-                username: currentUser,
-              }),
+              body: JSON.stringify({ action: "delete_chat", id: id, username: currentUser }),
             });
             loadChats();
           } catch (err) {
@@ -671,7 +609,6 @@
         }
       }
 
-      // Fungsi Kecilkan Saiz Gambar & Tukar ke Base64
       function resizeImageAndConvert(file, callback) {
         let reader = new FileReader();
         reader.onload = function (e) {
@@ -691,44 +628,31 @@
         reader.readAsDataURL(file);
       }
 
-      // Event Pengendali Fail Gambar Chat
-      document
-        .getElementById("img-upload")
-        .addEventListener("change", function (e) {
-          if (!currentUser) return checkLoginFocus();
-          if (this.files[0]) {
-            resizeImageAndConvert(this.files[0], (base64) => {
-              sendMsg(base64, "image");
-            });
-          }
-        });
+      document.getElementById("img-upload").addEventListener("change", function (e) {
+        if (!currentUser) return checkLoginFocus();
+        if (this.files[0]) {
+          resizeImageAndConvert(this.files[0], (base64) => { sendMsg(base64, "image"); });
+        }
+      });
 
-      // Event Pengendali Fail Gambar Profil
-      document
-        .getElementById("pp-upload")
-        .addEventListener("change", function (e) {
-          if (!currentUser) return checkLoginFocus();
-          if (this.files[0]) {
-            resizeImageAndConvert(this.files[0], async (base64) => {
-              document.getElementById("user-pp").src = base64;
-              localStorage.setItem("profilePic", base64);
-              try {
-                await fetch(GAS_URL, {
-                  method: "POST",
-                  body: JSON.stringify({
-                    action: "update_profile",
-                    username: currentUser,
-                    profilePic: base64,
-                  }),
-                });
-              } catch (err) {
-                console.error("Gagal mengemaskini gambar profil di pelayan.");
-              }
-            });
-          }
-        });
+      document.getElementById("pp-upload").addEventListener("change", function (e) {
+        if (!currentUser) return checkLoginFocus();
+        if (this.files[0]) {
+          resizeImageAndConvert(this.files[0], async (base64) => {
+            document.getElementById("user-pp").src = base64;
+            localStorage.setItem("profilePic", base64);
+            try {
+              await fetch(GAS_URL, {
+                method: "POST",
+                body: JSON.stringify({ action: "update_profile", username: currentUser, profilePic: base64 }),
+              });
+            } catch (err) {
+              console.error("Gagal mengemaskini gambar profil di pelayan.");
+            }
+          });
+        }
+      });
 
-      // Hantar apabila butang Enter ditekan
       msgInput.addEventListener("keypress", function (e) {
         if (e.key === "Enter") sendMsg();
       });
