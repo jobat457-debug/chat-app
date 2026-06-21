@@ -1,577 +1,528 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ms">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat Room WhatsApp Style</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-      /* Tema Dark Mode WhatsApp */
-      :root {
-        --bg-color: #111b21;
-        --chat-bg: #0b141a;
-        --text-main: #e9edef;
-        --text-muted: #8696a0;
-        --accent: #00a884;
-        --msg-in: #202c33;
-        --msg-out: #005c4b;
-        --border: #2a3942;
-        --header-bg: #202c33;
-        --input-bg: #2a3942;
-      }
+        /* Tema Dark Mode WhatsApp */
+        :root {
+            --bg-color: #111b21;
+            --chat-bg: #0b141a;
+            --text-main: #e9edef;
+            --text-muted: #8696a0;
+            --accent: #00a884;
+            --msg-in: #202c33;
+            --msg-out: #005c4b;
+            --border: #2a3942;
+            --header-bg: #202c33;
+            --input-bg: #2a3942;
+        }
 
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-        font-family:
-          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
-          Arial, sans-serif;
-      }
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--text-main); 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background-color: #374045; border-radius: 10px; }
+        
+        /* Header WhatsApp */
+        header { 
+            background: var(--header-bg); 
+            padding: 10px 15px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            z-index: 10;
+        }
+        .header-left { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            cursor: pointer;
+        }
+        .fa-arrow-left {
+            color: var(--text-main);
+            font-size: 1.2rem;
+            margin-right: 5px;
+        }
+        .profile-pic { 
+            width: 40px; 
+            height: 40px; 
+            border-radius: 50%; 
+            object-fit: cover; 
+            cursor: pointer; 
+        }
+        .header-text {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .header-text h3 {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 180px;
+        }
+        .header-right {
+            display: flex;
+            gap: 20px;
+            color: var(--text-main);
+            font-size: 1.2rem;
+            align-items: center;
+        }
+        
+        /* Chat Area (Berlatar Belakang Gelap) */
+        #chat-container { 
+            flex: 1; 
+            padding: 20px 5%; 
+            overflow-y: auto; 
+            background-color: var(--chat-bg); 
+            /* Doodle Background (Optional, menggunakan warna solid WA) */
+            background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
+            background-blend-mode: overlay;
+            display: flex; 
+            flex-direction: column; 
+            gap: 8px; 
+        }
+        
+        /* Bubble Mesej */
+        .msg { 
+            max-width: 85%; 
+            padding: 6px 8px 8px 10px; 
+            border-radius: 8px; 
+            position: relative; 
+            word-wrap: break-word; 
+            font-size: 0.95rem;
+            line-height: 1.4;
+            box-shadow: 0 1px 0.5px rgba(11, 20, 26, .2);
+        }
+        .msg.in { 
+            background: var(--msg-in); 
+            align-self: flex-start; 
+            border-top-left-radius: 0; 
+        }
+        .msg.out { 
+            background: var(--msg-out); 
+            align-self: flex-end; 
+            border-top-right-radius: 0; 
+        }
+        
+        /* Nama Pengirim Grup */
+        .msg-sender { 
+            font-size: 0.85rem; 
+            font-weight: 500; 
+            margin-bottom: 3px; 
+            display: flex;
+            justify-content: space-between;
+        }
+        .msg-sender-number {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: normal;
+            margin-left: 10px;
+        }
 
-      body {
-        background-color: var(--bg-color);
-        color: var(--text-main);
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-      }
+        /* Waktu & Status */
+        .msg-footer {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 5px;
+            margin-top: -5px;
+            float: right;
+            margin-left: 15px;
+            position: relative;
+            top: 5px;
+        }
+        .msg-time { 
+            font-size: 0.68rem; 
+            color: rgba(255, 255, 255, 0.6); 
+        }
+        .msg-status {
+            font-size: 0.8rem;
+            color: #53bdeb; /* Warna centang biru WA */
+        }
+        
+        .msg img { 
+            max-width: 100%; 
+            max-height: 250px;
+            border-radius: 6px; 
+            margin-top: 5px; 
+            margin-bottom: 5px;
+            display: block;
+        }
+        .deleted-msg { 
+            font-style: italic; 
+            color: var(--text-muted); 
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .delete-btn { 
+            font-size: 0.8rem; 
+            color: var(--text-muted); 
+            cursor: pointer; 
+            margin-left: 10px;
+        }
+        .delete-btn:hover { color: #ff5b5b; }
 
-      /* Custom Scrollbar */
-      ::-webkit-scrollbar {
-        width: 6px;
-      }
-      ::-webkit-scrollbar-thumb {
-        background-color: #374045;
-        border-radius: 10px;
-      }
+        /* Input Area WhatsApp Style */
+        #input-area { 
+            background: var(--header-bg); 
+            padding: 10px; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+        }
+        .input-wrapper {
+            flex: 1;
+            background: var(--input-bg);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            padding: 8px 15px;
+            gap: 15px;
+        }
+        .input-wrapper input[type="text"] { 
+            flex: 1; 
+            border: none; 
+            background: transparent; 
+            color: var(--text-main); 
+            outline: none; 
+            font-size: 1rem;
+        }
+        .input-wrapper input::placeholder {
+            color: var(--text-muted);
+        }
+        .btn-icon { 
+            color: var(--text-muted); 
+            font-size: 1.3rem; 
+            cursor: pointer; 
+        }
+        .btn-icon:hover { color: var(--text-main); }
+        
+        /* Tombol Kirim / Mic Hijau */
+        .send-btn-wrapper {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background-color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        .send-btn-wrapper i {
+            color: white;
+            font-size: 1.2rem;
+        }
 
-      /* Header WhatsApp */
-      header {
-        background: var(--header-bg);
-        padding: 10px 15px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        z-index: 10;
-      }
-      .header-left {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        cursor: pointer;
-      }
-      .fa-arrow-left {
-        color: var(--text-main);
-        font-size: 1.2rem;
-        margin-right: 5px;
-      }
-      .profile-pic {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        object-fit: cover;
-        cursor: pointer;
-      }
-      .header-text {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-      }
-      .header-text h3 {
-        font-size: 1rem;
-        font-weight: 500;
-        color: var(--text-main);
-        margin-bottom: 2px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 180px;
-      }
-      .header-text span {
-        font-size: 0.8rem;
-        color: var(--text-muted);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 180px;
-      }
-      .header-right {
-        display: flex;
-        gap: 20px;
-        color: var(--text-main);
-        font-size: 1.2rem;
-        align-items: center;
-      }
+        /* Modal Overlay */
+        .modal { 
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(11, 20, 26, 0.9); 
+            align-items: center; 
+            justify-content: center; 
+            z-index: 1000; 
+        }
+        .modal-content { 
+            background: var(--msg-in); 
+            padding: 30px; 
+            border-radius: 12px; 
+            width: 90%; 
+            max-width: 350px; 
+            text-align: center; 
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+        }
+        .modal-content h2 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            color: var(--text-main);
+        }
+        .modal-content input { 
+            width: 100%; 
+            padding: 14px; 
+            margin: 8px 0; 
+            border-radius: 8px; 
+            border: none; 
+            background: var(--input-bg); 
+            color: white; 
+            outline: none;
+            font-size: 1rem;
+        }
+        .modal-content button { 
+            width: 100%; 
+            padding: 14px; 
+            background: var(--accent); 
+            color: #111b21; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            margin-top: 15px;
+            font-size: 1rem;
+            transition: opacity 0.2s;
+        }
+        .modal-content button:hover { opacity: 0.9; }
+        .modal-content p { 
+            margin-top: 20px; 
+            font-size: 0.9rem; 
+            color: var(--accent); 
+            cursor: pointer; 
+        }
 
-      /* Chat Area */
-      #chat-container {
-        flex: 1;
-        padding: 20px 5%;
-        overflow-y: auto;
-        background-color: var(--chat-bg);
-        background-image: url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png");
-        background-blend-mode: overlay;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-      }
-
-      /* Bubble Mesej */
-      .msg {
-        max-width: 85%;
-        padding: 6px 8px 8px 10px;
-        border-radius: 8px;
-        position: relative;
-        word-wrap: break-word;
-        font-size: 0.95rem;
-        line-height: 1.4;
-        box-shadow: 0 1px 0.5px rgba(11, 20, 26, 0.2);
-      }
-      .msg.in {
-        background: var(--msg-in);
-        align-self: flex-start;
-        border-top-left-radius: 0;
-      }
-      .msg.out {
-        background: var(--msg-out);
-        align-self: flex-end;
-        border-top-right-radius: 0;
-      }
-
-      /* Nama Pengirim Grup */
-      .msg-sender {
-        font-size: 0.85rem;
-        font-weight: 500;
-        margin-bottom: 3px;
-        display: flex;
-        justify-content: space-between;
-      }
-      .msg-sender-number {
-        font-size: 0.75rem;
-        color: var(--text-muted);
-        font-weight: normal;
-        margin-left: 10px;
-      }
-
-      /* Waktu & Status */
-      .msg-footer {
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        gap: 5px;
-        margin-top: -5px;
-        float: right;
-        margin-left: 15px;
-        position: relative;
-        top: 5px;
-      }
-      .msg-time {
-        font-size: 0.68rem;
-        color: rgba(255, 255, 255, 0.6);
-      }
-      .msg-status {
-        font-size: 0.8rem;
-        color: #53bdeb; /* Warna centang biru WA */
-      }
-
-      .msg img {
-        max-width: 100%;
-        max-height: 250px;
-        border-radius: 6px;
-        margin-top: 5px;
-        margin-bottom: 5px;
-        display: block;
-      }
-      .deleted-msg {
-        font-style: italic;
-        color: var(--text-muted);
-        display: flex;
-        align-items: center;
-        gap: 5px;
-      }
-      .delete-btn {
-        font-size: 0.8rem;
-        color: var(--text-muted);
-        cursor: pointer;
-        margin-left: 10px;
-      }
-      .delete-btn:hover {
-        color: #ff5b5b;
-      }
-
-      /* Input Area WhatsApp Style */
-      #input-area {
-        background: var(--header-bg);
-        padding: 10px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-      .input-wrapper {
-        flex: 1;
-        background: var(--input-bg);
-        border-radius: 24px;
-        display: flex;
-        align-items: center;
-        padding: 8px 15px;
-        gap: 15px;
-      }
-      .input-wrapper input[type="text"] {
-        flex: 1;
-        border: none;
-        background: transparent;
-        color: var(--text-main);
-        outline: none;
-        font-size: 1rem;
-      }
-      .input-wrapper input::placeholder {
-        color: var(--text-muted);
-      }
-      .btn-icon {
-        color: var(--text-muted);
-        font-size: 1.3rem;
-        cursor: pointer;
-      }
-      .btn-icon:hover {
-        color: var(--text-main);
-      }
-
-      /* Tombol Kirim / Mic Hijau */
-      .send-btn-wrapper {
-        width: 45px;
-        height: 45px;
-        border-radius: 50%;
-        background-color: var(--accent);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        flex-shrink: 0;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-      }
-      .send-btn-wrapper i {
-        color: white;
-        font-size: 1.2rem;
-      }
-
-      /* Modal Overlay */
-      .modal {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(11, 20, 26, 0.9);
-        align-items: center;
-        justify-content: center;
-        z-index: 1000;
-      }
-      .modal-content {
-        background: var(--msg-in);
-        padding: 30px;
-        border-radius: 12px;
-        width: 90%;
-        max-width: 350px;
-        text-align: center;
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
-      }
-      .modal-content h2 {
-        margin-bottom: 20px;
-        font-size: 1.5rem;
-        color: var(--text-main);
-      }
-      .modal-content input {
-        width: 100%;
-        padding: 14px;
-        margin: 8px 0;
-        border-radius: 8px;
-        border: none;
-        background: var(--input-bg);
-        color: white;
-        outline: none;
-        font-size: 1rem;
-      }
-      .modal-content button {
-        width: 100%;
-        padding: 14px;
-        background: var(--accent);
-        color: #111b21;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: bold;
-        margin-top: 15px;
-        font-size: 1rem;
-        transition: opacity 0.2s;
-      }
-      .modal-content button:hover {
-        opacity: 0.9;
-      }
-      .modal-content p {
-        margin-top: 20px;
-        font-size: 0.9rem;
-        color: var(--accent);
-        cursor: pointer;
-      }
-      input[type="file"] {
-        display: none;
-      }
+        /* Sembunyikan elemen input fail */
+        input[type="file"] { display: none; }
     </style>
-  </head>
-  <body>
+</head>
+<body>
+
     <header>
-      <div class="header-left">
-        <i class="fas fa-arrow-left"></i>
-        <img
-          src="https://via.placeholder.com/40"
-          id="user-pp"
-          class="profile-pic"
-          title="Tukar Gambar Profil"
-          onclick="document.getElementById('pp-upload').click()"
-        />
-        <input type="file" id="pp-upload" accept="image/*" />
-        <div class="header-text">
-          <h3>Info Skripsi Unpam 2024</h3>
-          <span id="user-display">RahmatFauzi, +62 851-7247-3033...</span>
+        <div class="header-left">
+            <i class="fas fa-arrow-left"></i>
+            <img src="https://via.placeholder.com/40" id="user-pp" class="profile-pic" title="Tukar Gambar Profil" onclick="document.getElementById('pp-upload').click()">
+            <input type="file" id="pp-upload" accept="image/*">
+            <div class="header-text">
+                <h3>My Dear</h3>
+            </div>
         </div>
-      </div>
-      <div class="header-right">
-        <i class="fas fa-video"></i>
-        <i class="fas fa-phone"></i>
-        <i class="fas fa-ellipsis-v"></i>
-      </div>
+        <div class="header-right">
+            <i class="fas fa-ellipsis-v"></i>
+        </div>
     </header>
 
     <div id="chat-container"></div>
 
     <div id="input-area">
-      <div class="input-wrapper">
-        <i
-          class="far fa-smile btn-icon"
-          title="Emoji/Stiker"
-          onclick="sendMsg('⭐', 'text')"
-        ></i>
-        <input
-          type="text"
-          id="msg-input"
-          placeholder="Ketik pesan"
-          autocomplete="off"
-          onclick="checkLoginFocus()"
-        />
-        <i
-          class="fas fa-paperclip btn-icon"
-          title="Lampirkan File"
-          onclick="document.getElementById('img-upload').click()"
-        ></i>
-        <i class="fas fa-camera btn-icon" title="Kamera"></i>
-        <input type="file" id="img-upload" accept="image/*" />
-      </div>
-
-      <div class="send-btn-wrapper" onclick="handleSendClick()">
-        <i class="fas fa-microphone" id="send-icon"></i>
-      </div>
+        <div class="input-wrapper">
+            <i class="far fa-smile btn-icon" title="Emoji/Stiker" onclick="sendMsg('⭐', 'text')"></i>
+            <input type="text" id="msg-input" placeholder="Ketik pesan" autocomplete="off" onclick="checkLoginFocus()">
+            <i class="fas fa-paperclip btn-icon" title="Lampirkan File" onclick="document.getElementById('img-upload').click()"></i>
+            <i class="fas fa-camera btn-icon" title="Kamera"></i>
+            <input type="file" id="img-upload" accept="image/*">
+        </div>
+        
+        <div class="send-btn-wrapper" onclick="handleSendClick()">
+            <i class="fas fa-microphone" id="send-icon"></i>
+        </div>
     </div>
 
     <div class="modal" id="auth-modal">
-      <div class="modal-content">
-        <h2 id="auth-title">Login WhatsApp</h2>
-        <input type="text" id="auth-user" placeholder="Nama Pengguna" />
-        <input type="password" id="auth-pass" placeholder="Kata Laluan" />
-        <button onclick="doAuth()">Masuk</button>
-        <p id="auth-toggle" onclick="toggleAuth()">
-          Belum ada akun? Daftar di sini
-        </p>
-      </div>
+        <div class="modal-content">
+            <h2 id="auth-title">Login WhatsApp</h2>
+            <input type="text" id="auth-user" placeholder="Nama Pengguna">
+            <input type="password" id="auth-pass" placeholder="Kata Laluan">
+            <button onclick="doAuth()">Masuk</button>
+            <p id="auth-toggle" onclick="toggleAuth()">Belum ada akaun? Daftar di sini</p>
+        </div>
     </div>
 
-    <script>
-      // PERHATIAN: Masukkan URL Web App Anda yang berakhiran "/exec" di sini!
-      // Jangan gunakan URL yang berakhiran "/dev" karena akan menyebabkan error CORS.
-      const GAS_URL = "https://script.google.com/macros/s/AKfycbx6DCNrZzA4ShLPPLlRRn0t0qK4LYY-IpS0AN1pu1ENNgnwlyg8m9pSQgSxDMQ2lRzg/exec";
+<script>
+    // URL Google Apps Script yang Baru
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbx6DCNrZzA4ShLPPLlRRn0t0qK4LYY-IpS0AN1pu1ENNgnwlyg8m9pSQgSxDMQ2lRzg/exec'; 
 
-      let currentUser = localStorage.getItem("username");
-      let isLoginMode = true;
+    let currentUser = localStorage.getItem('username');
+    let isLoginMode = true;
 
-      // Fungsi Generate Warna Random
-      const waColors = [
-        "#ff5252", "#ba68c8", "#ff7a00", "#00bfa5",
-        "#cddc39", "#e91e63", "#4fc3f7", "#ffb300"
-      ];
-      function getUserColor(username) {
+    // Fungsi Generate Warna Random Berdasarkan Nama (Seperti Grup WA)
+    const waColors = ['#ff5252', '#ba68c8', '#ff7a00', '#00bfa5', '#cddc39', '#e91e63', '#4fc3f7', '#ffb300'];
+    function getUserColor(username) {
         let hash = 0;
         for (let i = 0; i < username.length; i++) {
-          hash = username.charCodeAt(i) + ((hash << 5) - hash);
+            hash = username.charCodeAt(i) + ((hash << 5) - hash);
         }
         return waColors[Math.abs(hash) % waColors.length];
-      }
+    }
 
-      window.onload = () => {
-        if (currentUser) {
-          updateHeaderDisplay(currentUser);
-          let pp = localStorage.getItem("profilePic");
-          if (pp) document.getElementById("user-pp").src = pp;
-        } else {
-          document.getElementById("user-display").innerText = "Sila login untuk chat...";
+    // Jalankan aplikasi pertama kali dibuka
+    window.onload = () => {
+        if(currentUser) {
+            let pp = localStorage.getItem('profilePic');
+            if(pp) document.getElementById('user-pp').src = pp;
         }
         loadChats();
-        setInterval(loadChats, 3000); 
-      };
+        setInterval(loadChats, 3000); // Semak mesej baharu setiap 3 saat
+    };
 
-      function updateHeaderDisplay(username) {
-        document.getElementById("user-display").innerText = `~ ${username}, RahmatFauzi...`;
-      }
-
-      const msgInput = document.getElementById("msg-input");
-      const sendIcon = document.getElementById("send-icon");
-
-      msgInput.addEventListener("input", function () {
-        if (this.value.trim().length > 0) {
-          sendIcon.className = "fas fa-paper-plane";
+    // Tukar Ikon Mic ke Send saat mengetik
+    const msgInput = document.getElementById('msg-input');
+    const sendIcon = document.getElementById('send-icon');
+    
+    msgInput.addEventListener('input', function() {
+        if(this.value.trim().length > 0) {
+            sendIcon.className = 'fas fa-paper-plane';
         } else {
-          sendIcon.className = "fas fa-microphone";
+            sendIcon.className = 'fas fa-microphone';
         }
-      });
+    });
 
-      function handleSendClick() {
-        if (msgInput.value.trim().length > 0) {
-          sendMsg();
+    // Handle klik tombol hijau di kanan bawah
+    function handleSendClick() {
+        if(msgInput.value.trim().length > 0) {
+            sendMsg();
         } else {
-          alert("Fungsi Voice Note belum tersedia.");
+            // Logika voice note kosong (opsional)
+            alert("Fungsi Voice Note belum tersedia.");
         }
-      }
+    }
 
-      function checkLoginFocus() {
+    // Fungsi semak login apabila input chat diklik
+    function checkLoginFocus() {
         if (!currentUser) {
-          msgInput.blur();
-          document.getElementById("auth-modal").style.display = "flex";
+            msgInput.blur();
+            document.getElementById('auth-modal').style.display = 'flex';
         }
-      }
+    }
 
-      function toggleAuth() {
+    // Tukar paparan modal antara Login dan Register
+    function toggleAuth() {
         isLoginMode = !isLoginMode;
-        document.getElementById("auth-title").innerText = isLoginMode ? "Login WhatsApp" : "Daftar Akun";
-        document.getElementById("auth-toggle").innerText = isLoginMode ? "Belum ada akun? Daftar di sini" : "Sudah ada akun? Login di sini";
-      }
+        document.getElementById('auth-title').innerText = isLoginMode ? 'Login WhatsApp' : 'Daftar Akaun';
+        document.getElementById('auth-toggle').innerText = isLoginMode ? 'Belum ada akaun? Daftar di sini' : 'Sudah ada akaun? Login di sini';
+    }
 
-      async function doAuth() {
-        if (GAS_URL === "MASUKKAN_URL_EXEC_ANDA_DI_SINI") {
-          alert("Tolong update GAS_URL di HTML dengan link /exec yang benar.");
-          return;
-        }
+    // Proses Login atau Register
+    async function doAuth() {
+        let u = document.getElementById('auth-user').value.trim();
+        let p = document.getElementById('auth-pass').value.trim();
+        if(!u || !p) return alert("Sila isi username dan password!");
 
-        let u = document.getElementById("auth-user").value.trim();
-        let p = document.getElementById("auth-pass").value.trim();
-        if (!u || !p) return alert("Sila isi username dan password!");
-
-        let action = isLoginMode ? "login" : "register";
-
-        try {
-          let res = await fetch(GAS_URL, {
-            method: "POST",
-            body: JSON.stringify({ action: action, username: u, password: p }),
-          });
-          let result = await res.json();
-
-          if (result.status === "success") {
-            if (isLoginMode) {
-              localStorage.setItem("username", u);
-              currentUser = u;
-              if (result.profilePic) {
-                localStorage.setItem("profilePic", result.profilePic);
-                document.getElementById("user-pp").src = result.profilePic;
-              } else {
-                document.getElementById("user-pp").src = "https://via.placeholder.com/40";
-              }
-              updateHeaderDisplay(u);
-              document.getElementById("auth-modal").style.display = "none";
-            } else {
-              alert("Pendaftaran berjaya! Sila login.");
-              toggleAuth();
-            }
-          } else {
-            alert(result.message);
-          }
-        } catch (err) {
-          alert("Ralat sambungan ke pelayan database.");
-        }
-      }
-
-      async function loadChats() {
-        if (GAS_URL === "MASUKKAN_URL_EXEC_ANDA_DI_SINI") return;
+        let action = isLoginMode ? 'login' : 'register';
         
         try {
-          let res = await fetch(GAS_URL);
-          let result = await res.json();
-
-          if (result.status === "success") {
-            let container = document.getElementById("chat-container");
-            let isScrolledToBottom = container.scrollHeight - container.clientHeight <= container.scrollTop + 50;
-
-            container.innerHTML = "";
-            result.data.forEach((chat) => {
-              let div = document.createElement("div");
-              let isMe = chat.username === currentUser;
-              div.className = `msg ${isMe ? "out" : "in"}`;
-
-              let timeStr = new Date(chat.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-
-              if (chat.isDeleted === true || chat.isDeleted === "true") {
-                div.innerHTML = `
-                    <span class="deleted-msg"><i class="fas fa-ban"></i> Pesan ini telah dihapus</span>
-                    <div class="msg-footer"><span class="msg-time">${timeStr}</span></div>
-                `;
-              } else {
-                let contentHTML = chat.type === "image" ? `<img src="${chat.content}">` : `<span>${chat.content}</span>`;
-                let delBtn = isMe ? `<i class="fas fa-trash delete-btn" title="Hapus pesan" onclick="deleteChat('${chat.id}')"></i>` : "";
-                let readReceipt = isMe ? `<i class="fas fa-check-double msg-status"></i>` : "";
-                let fakeNumber = "+62 8" + (chat.username.length * 12) + "-" + Math.floor(Math.random() * 9000 + 1000) + "-" + Math.floor(Math.random() * 9000 + 1000);
-                
-                let senderHTML = !isMe ? `
-                    <div class="msg-sender" style="color: ${getUserColor(chat.username)};">
-                        <span>~ ${chat.username}</span>
-                        <span class="msg-sender-number">${fakeNumber}</span>
-                    </div>` : "";
-
-                div.innerHTML = `
-                    ${senderHTML}
-                    ${contentHTML}
-                    <div class="msg-footer">
-                        <span class="msg-time">${timeStr}</span>
-                        ${readReceipt}
-                        ${delBtn}
-                    </div>
-                `;
-              }
-              container.appendChild(div);
+            let res = await fetch(GAS_URL, {
+                method: 'POST', 
+                body: JSON.stringify({ action: action, username: u, password: p })
             });
+            let result = await res.json();
 
-            if (isScrolledToBottom) container.scrollTop = container.scrollHeight;
-          }
-        } catch (e) {
-          console.error("Gagal memuatkan sembang:", e);
+            if(result.status === 'success') {
+                if (isLoginMode) {
+                    localStorage.setItem('username', u);
+                    currentUser = u;
+                    if(result.profilePic) {
+                        localStorage.setItem('profilePic', result.profilePic);
+                        document.getElementById('user-pp').src = result.profilePic;
+                    } else {
+                        document.getElementById('user-pp').src = 'https://via.placeholder.com/40';
+                    }
+                    document.getElementById('auth-modal').style.display = 'none';
+                } else {
+                    alert("Pendaftaran berjaya! Sila login.");
+                    toggleAuth();
+                }
+            } else {
+                alert(result.message);
+            }
+        } catch (err) {
+            alert("Ralat sambungan ke pelayan database.");
         }
-      }
+    }
 
-      async function sendMsg(content = null, type = "text") {
-        if (!currentUser) return checkLoginFocus();
+    // Ambil data chat dari Google Sheets
+    async function loadChats() {
+        try {
+            let res = await fetch(GAS_URL);
+            let result = await res.json();
+            
+            if(result.status === 'success') {
+                let container = document.getElementById('chat-container');
+                let isScrolledToBottom = container.scrollHeight - container.clientHeight <= container.scrollTop + 50;
+                
+                container.innerHTML = '';
+                result.data.forEach(chat => {
+                    let div = document.createElement('div');
+                    let isMe = chat.username === currentUser;
+                    div.className = `msg ${isMe ? 'out' : 'in'}`;
 
+                    let timeStr = new Date(chat.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+                    if (chat.isDeleted === true || chat.isDeleted === "true") {
+                        div.innerHTML = `
+                            <span class="deleted-msg"><i class="fas fa-ban"></i> Pesan ini telah dihapus</span>
+                            <div class="msg-footer">
+                                <span class="msg-time">${timeStr}</span>
+                            </div>
+                        `;
+                    } else {
+                        let contentHTML = chat.type === 'image' 
+                            ? `<img src="${chat.content}">` 
+                            : `<span>${chat.content}</span>`;
+                        
+                        let delBtn = isMe ? `<i class="fas fa-trash delete-btn" title="Hapus pesan" onclick="deleteChat('${chat.id}')"></i>` : '';
+                        let readReceipt = isMe ? `<i class="fas fa-check-double msg-status"></i>` : '';
+                        
+                        // Buat nombor fake (seperti di screenshot) dari panjang username
+                        let fakeNumber = "+62 8" + (chat.username.length * 12) + "-" + Math.floor(Math.random() * 9000 + 1000) + "-" + Math.floor(Math.random() * 9000 + 1000);
+
+                        let senderHTML = !isMe ? `
+                            <div class="msg-sender" style="color: ${getUserColor(chat.username)};">
+                                <span>~ ${chat.username}</span>
+                                <span class="msg-sender-number">${fakeNumber}</span>
+                            </div>` : '';
+
+                        div.innerHTML = `
+                            ${senderHTML}
+                            ${contentHTML}
+                            <div class="msg-footer">
+                                <span class="msg-time">${timeStr}</span>
+                                ${readReceipt}
+                                ${delBtn}
+                            </div>
+                        `;
+                    }
+                    container.appendChild(div);
+                });
+
+                if(isScrolledToBottom) container.scrollTop = container.scrollHeight;
+            }
+        } catch (e) {
+            console.error("Gagal memuatkan sembang:", e);
+        }
+    }
+
+    // Fungsi Hantar Mesej (Teks / Gambar / Stiker)
+    async function sendMsg(content = null, type = 'text') {
+        if(!currentUser) return checkLoginFocus();
+        
         let msg = content || msgInput.value.trim();
-        if (!msg && type === "text") return;
+        if(!msg && type === 'text') return;
 
-        msgInput.value = "";
-        sendIcon.className = "fas fa-microphone"; 
-
-        let container = document.getElementById("chat-container");
-        let tempDiv = document.createElement("div");
-        tempDiv.className = "msg out";
-        let timeNow = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-        let tempContent = type === "image" ? `<i>Mengirim gambar...</i>` : `<span>${msg}</span>`;
+        msgInput.value = ''; 
+        sendIcon.className = 'fas fa-microphone'; // Reset ikon ke mic
+        
+        // Paparan Sementara (Optimistic UI)
+        let container = document.getElementById('chat-container');
+        let tempDiv = document.createElement('div');
+        tempDiv.className = 'msg out';
+        let timeNow = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        
+        let tempContent = type === 'image' ? `<i>Mengirim gambar...</i>` : `<span>${msg}</span>`;
 
         tempDiv.innerHTML = `
             ${tempContent}
@@ -584,78 +535,85 @@
         container.scrollTop = container.scrollHeight;
 
         try {
-          await fetch(GAS_URL, {
-            method: "POST",
-            body: JSON.stringify({ action: "send_chat", username: currentUser, type: type, content: msg }),
-          });
-          loadChats();
-        } catch (err) {
-          alert("Gagal menghantar mesej.");
-          loadChats();
-        }
-      }
-
-      async function deleteChat(id) {
-        if (confirm("Hapus pesan ini?")) {
-          try {
             await fetch(GAS_URL, {
-              method: "POST",
-              body: JSON.stringify({ action: "delete_chat", id: id, username: currentUser }),
+                method: 'POST', 
+                body: JSON.stringify({ action: 'send_chat', username: currentUser, type: type, content: msg })
             });
             loadChats();
-          } catch (err) {
-            alert("Gagal menghapus pesan.");
-          }
+        } catch (err) {
+            alert("Gagal menghantar mesej.");
+            loadChats();
         }
-      }
+    }
 
-      function resizeImageAndConvert(file, callback) {
-        let reader = new FileReader();
-        reader.onload = function (e) {
-          let img = new Image();
-          img.onload = function () {
-            let canvas = document.createElement("canvas");
-            let ctx = canvas.getContext("2d");
-            let MAX_WIDTH = 400;
-            let scaleSize = MAX_WIDTH / img.width;
-            canvas.width = MAX_WIDTH;
-            canvas.height = img.height * scaleSize;
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            callback(canvas.toDataURL("image/jpeg", 0.7));
-          };
-          img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      }
-
-      document.getElementById("img-upload").addEventListener("change", function (e) {
-        if (!currentUser) return checkLoginFocus();
-        if (this.files[0]) {
-          resizeImageAndConvert(this.files[0], (base64) => { sendMsg(base64, "image"); });
-        }
-      });
-
-      document.getElementById("pp-upload").addEventListener("change", function (e) {
-        if (!currentUser) return checkLoginFocus();
-        if (this.files[0]) {
-          resizeImageAndConvert(this.files[0], async (base64) => {
-            document.getElementById("user-pp").src = base64;
-            localStorage.setItem("profilePic", base64);
+    // Padam / Tarik Balik Mesej
+    async function deleteChat(id) {
+        if(confirm("Hapus pesan ini?")) {
             try {
-              await fetch(GAS_URL, {
-                method: "POST",
-                body: JSON.stringify({ action: "update_profile", username: currentUser, profilePic: base64 }),
-              });
+                await fetch(GAS_URL, {
+                    method: 'POST', 
+                    body: JSON.stringify({ action: 'delete_chat', id: id, username: currentUser })
+                });
+                loadChats();
             } catch (err) {
-              console.error("Gagal mengemaskini gambar profil di pelayan.");
+                alert("Gagal menghapus pesan.");
             }
-          });
         }
-      });
+    }
 
-      msgInput.addEventListener("keypress", function (e) {
-        if (e.key === "Enter") sendMsg();
-      });
-    </script>
-  </body>
+    // Fungsi Kecilkan Saiz Gambar & Tukar ke Base64
+    function resizeImageAndConvert(file, callback) {
+        let reader = new FileReader();
+        reader.onload = function(e) {
+            let img = new Image();
+            img.onload = function() {
+                let canvas = document.createElement('canvas');
+                let ctx = canvas.getContext('2d');
+                let MAX_WIDTH = 400; 
+                let scaleSize = MAX_WIDTH / img.width;
+                canvas.width = MAX_WIDTH;
+                canvas.height = img.height * scaleSize;
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                callback(canvas.toDataURL('image/jpeg', 0.7));
+            }
+            img.src = e.target.result;
+        }
+        reader.readAsDataURL(file);
+    }
+
+    // Event Pengendali Fail Gambar Chat
+    document.getElementById('img-upload').addEventListener('change', function(e) {
+        if(!currentUser) return checkLoginFocus();
+        if(this.files[0]) {
+            resizeImageAndConvert(this.files[0], base64 => {
+                sendMsg(base64, 'image');
+            });
+        }
+    });
+
+    // Event Pengendali Fail Gambar Profil
+    document.getElementById('pp-upload').addEventListener('change', function(e) {
+        if(!currentUser) return checkLoginFocus();
+        if(this.files[0]) {
+            resizeImageAndConvert(this.files[0], async base64 => {
+                document.getElementById('user-pp').src = base64;
+                localStorage.setItem('profilePic', base64);
+                try {
+                    await fetch(GAS_URL, {
+                        method: 'POST', 
+                        body: JSON.stringify({ action: 'update_profile', username: currentUser, profilePic: base64 })
+                    });
+                } catch(err) {
+                    console.error("Gagal mengemaskini gambar profil di pelayan.");
+                }
+            });
+        }
+    });
+
+    // Hantar apabila butang Enter ditekan
+    msgInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') sendMsg();
+    });
+</script>
+</body>
 </html>
