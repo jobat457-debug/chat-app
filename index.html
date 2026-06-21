@@ -2,7 +2,7 @@
 <html lang="ms">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Chat Room WhatsApp Style</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -52,7 +52,6 @@
             display: flex;
             flex-direction: column;
             position: relative;
-            flex: 1;
         }
 
         /* Tampilan Desktop ala WhatsApp Web */
@@ -63,7 +62,6 @@
             .app-container {
                 max-width: 900px;
                 height: 95vh;
-                flex: none;
                 border-radius: 0;
                 box-shadow: 0 6px 18px rgba(0,0,0,0.1);
                 border: 1px solid var(--border);
@@ -81,6 +79,7 @@
             align-items: center; 
             justify-content: space-between; 
             z-index: 10;
+            flex-shrink: 0; /* Pastikan header tidak tertekan */
         }
         .header-left { 
             display: flex; 
@@ -115,14 +114,13 @@
             max-width: 180px;
         }
         
-        /* Area Titik Tiga dan Dropdown */
         .header-right {
             display: flex;
             gap: 20px;
             color: var(--text-main);
             font-size: 1.2rem;
             align-items: center;
-            position: relative; /* Penting untuk dropdown */
+            position: relative; 
         }
         .header-right i {
             cursor: pointer;
@@ -131,7 +129,7 @@
         
         /* Dropdown Menu Style */
         .dropdown-menu {
-            display: none; /* Disembunyikan secara lalai */
+            display: none; 
             position: absolute;
             top: 40px;
             right: 0;
@@ -166,7 +164,7 @@
             gap: 8px; 
         }
         
-        /* Bubble Mesej */
+        /* Bubble Mesej Layout WA Asli */
         .msg { 
             max-width: 85%; 
             padding: 6px 8px 8px 10px; 
@@ -176,24 +174,66 @@
             font-size: 0.95rem;
             line-height: 1.4;
             box-shadow: 0 1px 0.5px rgba(11, 20, 26, .2);
+            display: block; /* Penting untuk float footer */
         }
-        .msg.in { background: var(--msg-in); align-self: flex-start; border-top-left-radius: 0; }
-        .msg.out { background: var(--msg-out); align-self: flex-end; border-top-right-radius: 0; }
+        .msg::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+        .msg.in { background: var(--msg-in); align-self: flex-start; border-top-left-radius: 0; margin-left: 8px;}
+        .msg.out { background: var(--msg-out); align-self: flex-end; border-top-right-radius: 0; margin-right: 8px;}
+        
+        /* Ekor Bubble Chat */
+        .msg.in::before {
+            content: ""; position: absolute; top: 0; left: -8px;
+            border-top: 10px solid var(--msg-in); border-left: 10px solid transparent;
+        }
+        .msg.out::after {
+            content: ""; position: absolute; top: 0; right: -8px;
+            border-top: 10px solid var(--msg-out); border-right: 10px solid transparent;
+        }
         
         .msg-sender { font-size: 0.85rem; font-weight: 500; margin-bottom: 3px; display: flex; justify-content: space-between;}
         .msg-sender-number { font-size: 0.75rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;}
 
-        .msg-footer { display: flex; justify-content: flex-end; align-items: center; gap: 5px; margin-top: -5px; float: right; margin-left: 15px; position: relative; top: 5px;}
+        /* Footer Chat (Waktu & Centang) */
+        .msg-footer { 
+            float: right; 
+            display: flex; 
+            align-items: center; 
+            gap: 4px; 
+            margin-left: 10px; 
+            margin-top: 5px; 
+            position: relative; 
+            top: 2px;
+        }
         .msg-time { font-size: 0.68rem; color: rgba(255, 255, 255, 0.6); }
         .msg-status { font-size: 0.8rem; color: #53bdeb; }
         
-        .msg img { max-width: 100%; max-height: 250px; border-radius: 6px; margin-top: 5px; margin-bottom: 5px; display: block;}
-        .deleted-msg { font-style: italic; color: var(--text-muted); display: flex; align-items: center; gap: 5px;}
-        .delete-btn { font-size: 0.8rem; color: var(--text-muted); cursor: pointer; margin-left: 10px;}
+        .msg img { max-width: 100%; max-height: 250px; border-radius: 6px; margin-top: 5px; margin-bottom: 5px; display: block; object-fit: cover;}
+        
+        /* Layout Pesan Dihapus */
+        .deleted-msg { font-style: italic; color: rgba(255, 255, 255, 0.6); }
+        .deleted-msg i { margin-right: 5px; font-size: 0.95rem; }
+        
+        /* Ikon Delete */
+        .delete-btn { font-size: 0.75rem; color: rgba(255, 255, 255, 0.3); cursor: pointer; margin-left: 2px; transition: color 0.2s;}
         .delete-btn:hover { color: #ff5b5b; }
 
         /* Input Area & Emoji Picker */
-        #input-area { background: var(--header-bg); padding: 10px; display: flex; align-items: center; gap: 8px; position: relative;}
+        #input-area { 
+            background: var(--header-bg); 
+            padding: 10px; 
+            padding-bottom: calc(10px + env(safe-area-inset-bottom)); /* Cegah ketutup di layar hp full */
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            position: relative;
+            width: 100%;
+            box-sizing: border-box;
+            flex-shrink: 0; /* Pastikan input area tidak hilang tertekan */
+        }
         .input-wrapper { flex: 1; background: var(--input-bg); border-radius: 24px; display: flex; align-items: center; padding: 8px 15px; gap: 15px; }
         .input-wrapper input[type="text"] { flex: 1; border: none; background: transparent; color: var(--text-main); outline: none; font-size: 1rem;}
         .input-wrapper input::placeholder { color: var(--text-muted); }
@@ -296,9 +336,9 @@
             <div class="modal-content">
                 <h2 id="auth-title">Login WhatsApp</h2>
                 <input type="text" id="auth-user" placeholder="Nama Pengguna">
-                <input type="password" id="auth-pass" placeholder="Kata Laluan">
+                <input type="password" id="auth-pass" placeholder="Kata Sandi">
                 <button onclick="doAuth()">MASUK</button>
-                <p id="auth-toggle" onclick="toggleAuth()">Belum ada akaun? Daftar di sini</p>
+                <p id="auth-toggle" onclick="toggleAuth()">Belum ada akun? Daftar di sini</p>
             </div>
         </div>
     </div>
@@ -368,8 +408,8 @@
 
     function toggleAuth() {
         isLoginMode = !isLoginMode;
-        document.getElementById('auth-title').innerText = isLoginMode ? 'Login WhatsApp' : 'Daftar Akaun';
-        document.getElementById('auth-toggle').innerText = isLoginMode ? 'Belum ada akaun? Daftar di sini' : 'Sudah ada akaun? Login di sini';
+        document.getElementById('auth-title').innerText = isLoginMode ? 'Login WhatsApp' : 'Daftar Akun';
+        document.getElementById('auth-toggle').innerText = isLoginMode ? 'Belum ada akun? Daftar di sini' : 'Sudah ada akun? Login di sini';
         document.querySelector('#auth-modal button').innerText = isLoginMode ? 'MASUK' : 'DAFTAR';
     }
 
@@ -396,21 +436,14 @@
 
     function doLogout() {
         if(confirm("Adakah anda pasti mahu log keluar?")) {
-            // Hapus data dari LocalStorage browser
             localStorage.removeItem('username');
             localStorage.removeItem('profilePic');
             currentUser = null;
             
-            // Kembalikan foto profil ke lalai
             document.getElementById('user-pp').src = DEFAULT_PP;
-            
-            // Sembunyikan menu dropdown
             document.getElementById("settings-menu").style.display = "none";
-            
-            // Munculkan kembali modal login
             document.getElementById('auth-modal').style.display = 'flex';
             
-            // Bersihkan input teks 
             document.getElementById('auth-user').value = '';
             document.getElementById('auth-pass').value = '';
         }
@@ -471,8 +504,9 @@
                     let timeStr = new Date(chat.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 
                     if (chat.isDeleted === true || chat.isDeleted === "true") {
+                        let delText = isMe ? "Anda menghapus pesan ini" : "Pesan ini telah dihapus";
                         div.innerHTML = `
-                            <span class="deleted-msg"><i class="fas fa-ban"></i> Pesan ini telah dihapus</span>
+                            <span class="deleted-msg"><i class="fas fa-ban"></i> ${delText}</span>
                             <div class="msg-footer">
                                 <span class="msg-time">${timeStr}</span>
                             </div>
@@ -480,7 +514,7 @@
                     } else {
                         let contentHTML = chat.type === 'image' 
                             ? `<img src="${chat.content}">` 
-                            : `<span>${chat.content}</span>`;
+                            : `<span class="msg-text">${chat.content}</span>`;
                         
                         let delBtn = isMe ? `<i class="fas fa-trash delete-btn" title="Hapus pesan" onclick="deleteChat('${chat.id}')"></i>` : '';
                         let readReceipt = isMe ? `<i class="fas fa-check-double msg-status"></i>` : '';
@@ -527,7 +561,7 @@
         tempDiv.className = 'msg out';
         let timeNow = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
         
-        let tempContent = type === 'image' ? `<i>Mengirim gambar...</i>` : `<span>${msg}</span>`;
+        let tempContent = type === 'image' ? `<i>Mengirim gambar...</i>` : `<span class="msg-text">${msg}</span>`;
 
         tempDiv.innerHTML = `
             ${tempContent}
