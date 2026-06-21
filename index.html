@@ -222,6 +222,7 @@
 </head>
 <body>
 
+    <!-- Header -->
     <header>
         <div class="header-info">
             <img src="https://via.placeholder.com/40" id="user-pp" class="profile-pic" title="Tukar Gambar Profil" onclick="document.getElementById('pp-upload').click()">
@@ -233,18 +234,22 @@
         </div>
     </header>
 
+    <!-- Chat Box -->
     <div id="chat-container"></div>
 
+    <!-- Input Area -->
     <div id="input-area">
         <label for="img-upload" class="btn-action" title="Hantar Gambar">📷</label>
         <input type="file" id="img-upload" accept="image/*">
         
+        <!-- Tombol Hantar Stiker Custom -->
         <button class="btn-action" title="Hantar Stiker" onclick="sendMsg('🚀', 'text')">⭐</button>
 
         <input type="text" id="msg-input" placeholder="Taip mesej..." autocomplete="off" onclick="checkLoginFocus()">
         <button class="btn-action" style="color: var(--accent);" onclick="sendMsg()" title="Hantar Mesej">➤</button>
     </div>
 
+    <!-- Auth Modal (Login / Register) -->
     <div class="modal" id="auth-modal">
         <div class="modal-content">
             <h2 id="auth-title">Login</h2>
