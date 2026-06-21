@@ -37,23 +37,27 @@
             overflow: hidden;
         }
 
+        /* Container Responsif */
         .app-container {
             width: 100%;
-            max-width: 420px; 
             height: 100vh;
             background-color: var(--bg-color);
             display: flex;
             flex-direction: column;
             position: relative;
-            box-shadow: 0 0 25px rgba(0,0,0,0.5); 
         }
 
-        @media screen and (min-width: 450px) {
+        /* Tampilan Desktop ala WhatsApp Web */
+        @media screen and (min-width: 768px) {
+            body {
+                background-image: linear-gradient(180deg, #202c33 0%, #202c33 130px, #0a1014 130px, #0a1014 100%);
+            }
             .app-container {
+                max-width: 900px;
                 height: 95vh;
-                border-radius: 30px;
-                border: 6px solid #2a3942;
-                overflow: hidden;
+                border-radius: 0;
+                box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+                border: 1px solid var(--border);
             }
         }
         
@@ -179,8 +183,8 @@
         .delete-btn { font-size: 0.8rem; color: var(--text-muted); cursor: pointer; margin-left: 10px;}
         .delete-btn:hover { color: #ff5b5b; }
 
-        /* Input Area */
-        #input-area { background: var(--header-bg); padding: 10px; display: flex; align-items: center; gap: 8px; }
+        /* Input Area & Emoji Picker */
+        #input-area { background: var(--header-bg); padding: 10px; display: flex; align-items: center; gap: 8px; position: relative;}
         .input-wrapper { flex: 1; background: var(--input-bg); border-radius: 24px; display: flex; align-items: center; padding: 8px 15px; gap: 15px; }
         .input-wrapper input[type="text"] { flex: 1; border: none; background: transparent; color: var(--text-main); outline: none; font-size: 1rem;}
         .input-wrapper input::placeholder { color: var(--text-muted); }
@@ -190,14 +194,38 @@
         .send-btn-wrapper { width: 45px; height: 45px; border-radius: 50%; background-color: var(--accent); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.3);}
         .send-btn-wrapper i { color: white; font-size: 1.2rem;}
 
-        /* Modal Overlay */
-        .modal { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11, 20, 26, 0.9); align-items: center; justify-content: center; z-index: 1000; }
-        .modal-content { background: var(--msg-in); padding: 30px; border-radius: 12px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 15px 30px rgba(0,0,0,0.5);}
-        .modal-content h2 { margin-bottom: 20px; font-size: 1.5rem; color: var(--text-main); }
-        .modal-content input { width: 100%; padding: 14px; margin: 8px 0; border-radius: 8px; border: none; background: var(--input-bg); color: white; outline: none; font-size: 1rem;}
-        .modal-content button { width: 100%; padding: 14px; background: var(--accent); color: #111b21; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 15px; font-size: 1rem; transition: opacity 0.2s;}
+        .emoji-picker {
+            display: none;
+            position: absolute;
+            bottom: 70px;
+            left: 10px;
+            background: var(--header-bg);
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            gap: 12px;
+            flex-wrap: wrap;
+            width: 250px;
+            z-index: 100;
+        }
+        .emoji-picker span {
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .emoji-picker span:hover {
+            transform: scale(1.2);
+        }
+
+        /* Modal Overlay WhatsApp Style */
+        .modal { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11, 20, 26, 0.95); align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: var(--header-bg); padding: 40px 30px; border-radius: 6px; width: 90%; max-width: 380px; text-align: center; box-shadow: 0 17px 50px 0 rgba(0,0,0,0.19), 0 12px 15px 0 rgba(0,0,0,0.24);}
+        .modal-content h2 { margin-bottom: 30px; font-size: 1.4rem; font-weight: 300; color: var(--text-main); }
+        .modal-content input { width: 100%; padding: 12px 0; margin: 10px 0; border: none; border-bottom: 2px solid var(--accent); background: transparent; color: var(--text-main); outline: none; font-size: 1rem; border-radius: 0; transition: border-color 0.2s;}
+        .modal-content input:focus { border-bottom: 2px solid #53bdeb; }
+        .modal-content button { width: auto; min-width: 120px; padding: 12px 24px; background: var(--accent); color: #111b21; border: none; border-radius: 24px; cursor: pointer; font-weight: 600; margin-top: 30px; font-size: 0.95rem; transition: opacity 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.2);}
         .modal-content button:hover { opacity: 0.9; }
-        .modal-content p { margin-top: 20px; font-size: 0.9rem; color: var(--accent); cursor: pointer; }
+        .modal-content p { margin-top: 25px; font-size: 0.9rem; color: #53bdeb; cursor: pointer; font-weight: 500;}
 
         input[type="file"] { display: none; }
     </style>
@@ -208,7 +236,7 @@
         <header>
             <div class="header-left">
                 <i class="fas fa-arrow-left"></i>
-                <img src="https://via.placeholder.com/40" id="user-pp" class="profile-pic" title="Tukar Gambar Profil" onclick="document.getElementById('pp-upload').click()">
+                <img src="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='12' fill='%2300a884'/%3E%3Cpath d='M12 13.5c-2.5 0-7.5 1.25-7.5 3.75v2.25h15v-2.25c0-2.5-5-3.75-7.5-3.75zm0-2.5c1.65 0 3-1.35 3-3s-1.35-3-3-3-3 1.35-3 3 1.35 3 3 3z' fill='%23ffffff'/%3E%3C/svg%3E" id="user-pp" class="profile-pic" title="Tukar Gambar Profil" onclick="document.getElementById('pp-upload').click()">
                 <input type="file" id="pp-upload" accept="image/*">
                 <div class="header-text">
                     <h3>My Dear</h3>
@@ -226,8 +254,23 @@
         <div id="chat-container"></div>
 
         <div id="input-area">
+            <div id="emoji-picker" class="emoji-picker">
+                <span onclick="addEmoji('😀')">😀</span>
+                <span onclick="addEmoji('😂')">😂</span>
+                <span onclick="addEmoji('🥰')">🥰</span>
+                <span onclick="addEmoji('😎')">😎</span>
+                <span onclick="addEmoji('🙏')">🙏</span>
+                <span onclick="addEmoji('👍')">👍</span>
+                <span onclick="addEmoji('🔥')">🔥</span>
+                <span onclick="addEmoji('❤️')">❤️</span>
+                <span onclick="addEmoji('😭')">😭</span>
+                <span onclick="addEmoji('🎉')">🎉</span>
+                <span onclick="addEmoji('⭐')">⭐</span>
+                <span onclick="addEmoji('😡')">😡</span>
+            </div>
+
             <div class="input-wrapper">
-                <i class="far fa-smile btn-icon" title="Emoji/Stiker" onclick="sendMsg('⭐', 'text')"></i>
+                <i class="far fa-smile btn-icon" title="Emoji/Stiker" onclick="toggleEmoji()"></i>
                 <input type="text" id="msg-input" placeholder="Ketik pesan" autocomplete="off" onclick="checkLoginFocus()">
                 <i class="fas fa-paperclip btn-icon" title="Lampirkan File" onclick="document.getElementById('img-upload').click()"></i>
                 <i class="fas fa-camera btn-icon" title="Kamera"></i>
@@ -244,7 +287,7 @@
                 <h2 id="auth-title">Login WhatsApp</h2>
                 <input type="text" id="auth-user" placeholder="Nama Pengguna">
                 <input type="password" id="auth-pass" placeholder="Kata Laluan">
-                <button onclick="doAuth()">Masuk</button>
+                <button onclick="doAuth()">MASUK</button>
                 <p id="auth-toggle" onclick="toggleAuth()">Belum ada akaun? Daftar di sini</p>
             </div>
         </div>
@@ -252,6 +295,7 @@
 
 <script>
     const GAS_URL = 'https://script.google.com/macros/s/AKfycbx6DCNrZzA4ShLPPLlRRn0t0qK4LYY-IpS0AN1pu1ENNgnwlyg8m9pSQgSxDMQ2lRzg/exec'; 
+    const DEFAULT_PP = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='12' fill='%2300a884'/%3E%3Cpath d='M12 13.5c-2.5 0-7.5 1.25-7.5 3.75v2.25h15v-2.25c0-2.5-5-3.75-7.5-3.75zm0-2.5c1.65 0 3-1.35 3-3s-1.35-3-3-3-3 1.35-3 3 1.35 3 3 3z' fill='%23ffffff'/%3E%3C/svg%3E";
 
     let currentUser = localStorage.getItem('username');
     let isLoginMode = true;
@@ -285,6 +329,18 @@
         }
     });
 
+    function toggleEmoji() {
+        let picker = document.getElementById('emoji-picker');
+        picker.style.display = (picker.style.display === 'none' || picker.style.display === '') ? 'flex' : 'none';
+    }
+
+    function addEmoji(emoji) {
+        msgInput.value += emoji;
+        msgInput.focus();
+        sendIcon.className = 'fas fa-paper-plane';
+        document.getElementById('emoji-picker').style.display = 'none';
+    }
+
     function handleSendClick() {
         if(msgInput.value.trim().length > 0) {
             sendMsg();
@@ -304,6 +360,7 @@
         isLoginMode = !isLoginMode;
         document.getElementById('auth-title').innerText = isLoginMode ? 'Login WhatsApp' : 'Daftar Akaun';
         document.getElementById('auth-toggle').innerText = isLoginMode ? 'Belum ada akaun? Daftar di sini' : 'Sudah ada akaun? Login di sini';
+        document.querySelector('#auth-modal button').innerText = isLoginMode ? 'MASUK' : 'DAFTAR';
     }
 
     // FUNGSI UNTUK MENU DROPDOWN & LOGOUT
@@ -319,6 +376,12 @@
         if (menu && menu.style.display === "block") {
             menu.style.display = "none";
         }
+        
+        // Tutup emoji picker jika klik di luar
+        let emojiPicker = document.getElementById("emoji-picker");
+        if (!event.target.closest('.fa-smile') && !event.target.closest('#emoji-picker')) {
+            emojiPicker.style.display = "none";
+        }
     }
 
     function doLogout() {
@@ -329,7 +392,7 @@
             currentUser = null;
             
             // Kembalikan foto profil ke lalai
-            document.getElementById('user-pp').src = 'https://via.placeholder.com/40';
+            document.getElementById('user-pp').src = DEFAULT_PP;
             
             // Sembunyikan menu dropdown
             document.getElementById("settings-menu").style.display = "none";
@@ -365,7 +428,7 @@
                         localStorage.setItem('profilePic', result.profilePic);
                         document.getElementById('user-pp').src = result.profilePic;
                     } else {
-                        document.getElementById('user-pp').src = 'https://via.placeholder.com/40';
+                        document.getElementById('user-pp').src = DEFAULT_PP;
                     }
                     document.getElementById('auth-modal').style.display = 'none';
                 } else {
